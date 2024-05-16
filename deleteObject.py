@@ -225,7 +225,10 @@ class deleteObject(OpenRTM_aist.DataFlowComponentBase):
         voice_copied = copy.deepcopy(in_voice_data)
         
         # ここで各配列とidの値を使った処理を行う
-        del coordinate_copied[id]
+        coorId = id *2
+        for i in range(2):
+            del coordinate_copied[coorId]
+
         del image_copied[id]
         del voice_copied[id]
 
@@ -233,8 +236,11 @@ class deleteObject(OpenRTM_aist.DataFlowComponentBase):
         length = len(coordinate_copied)
         for i in range(length):
             self._d_outCoordinate.data[i] = coordinate_copied[i]
+            print(i+"回くり返した。座標格納")
+        for i in range(len(image_copied)):
             self._d_outVoice.data[i] = voice_copied[i]
             self._d_outImage.data[i] = image_copied[i]
+            print(i+"回くり返した。voice,image格納")
 
         #dataの出力
         self._outCoordinateOut.write() 
