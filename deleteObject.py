@@ -37,7 +37,7 @@ deleteobject_spec = ["implementation_id", "deleteObject",
          "type_name",         "deleteObject", 
          "description",       "ModuleDescription", 
          "version",           "1.0.0", 
-         "vendor",            "VenderName", 
+         "vendor",            "Ikkyu", 
          "category",          "Category", 
          "activity_type",     "STATIC", 
          "max_instance",      "1", 
@@ -62,34 +62,34 @@ class deleteObject(OpenRTM_aist.DataFlowComponentBase):
     def __init__(self, manager):
         OpenRTM_aist.DataFlowComponentBase.__init__(self, manager)
 
-        self._d_inCoordinate = OpenRTM_aist.instantiateDataType(RTC.TimedShortSeq)
+        self._d_InCoordinate = OpenRTM_aist.instantiateDataType(RTC.TimedShortSeq)
         """
         """
-        self._inCoordinateIn = OpenRTM_aist.InPort("inCoordinate", self._d_inCoordinate)
+        self._InCoordinateIn = OpenRTM_aist.InPort("InCoordinate", self._d_InCoordinate)
+        self._d_InImage = OpenRTM_aist.instantiateDataType(RTC.TimedShortSeq)
+        """
+        """
+        self._InImageIn = OpenRTM_aist.InPort("InImage", self._d_InImage)
+        self._d_InVoice = OpenRTM_aist.instantiateDataType(RTC.TimedOctetSeq)
+        """
+        """
+        self._InVoiceIn = OpenRTM_aist.InPort("InVoice", self._d_InVoice)
         self._d_id = OpenRTM_aist.instantiateDataType(RTC.TimedShort)
         """
         """
         self._idIn = OpenRTM_aist.InPort("id", self._d_id)
-        self._d_inVoice = OpenRTM_aist.instantiateDataType(RTC.TimedOctetSeq)
+        self._d_OutCoordinate = OpenRTM_aist.instantiateDataType(RTC.TimedShortSeq)
         """
         """
-        self._inVoiceIn = OpenRTM_aist.InPort("inVoice", self._d_inVoice)
-        self._d_inImage = OpenRTM_aist.instantiateDataType(RTC.TimedOctetSeq)
+        self._OutCoordinateOut = OpenRTM_aist.OutPort("OutCoordinate", self._d_OutCoordinate)
+        self._d_OutImage = OpenRTM_aist.instantiateDataType(RTC.TimedShortSeq)
         """
         """
-        self._inImageIn = OpenRTM_aist.InPort("inImage", self._d_inImage)
-        self._d_outVoice = OpenRTM_aist.instantiateDataType(RTC.TimedOctetSeq)
+        self._OutImageOut = OpenRTM_aist.OutPort("OutImage", self._d_OutImage)
+        self._d_OutVoice = OpenRTM_aist.instantiateDataType(RTC.TimedOctetSeq)
         """
         """
-        self._outVoiceOut = OpenRTM_aist.OutPort("outVoice", self._d_outVoice)
-        self._d_outImage = OpenRTM_aist.instantiateDataType(RTC.TimedOctetSeq)
-        """
-        """
-        self._outImageOut = OpenRTM_aist.OutPort("outImage", self._d_outImage)
-        self._d_outCoordinate = OpenRTM_aist.instantiateDataType(RTC.TimedShortSeq)
-        """
-        """
-        self._outCoordinateOut = OpenRTM_aist.OutPort("outCoordinate", self._d_outCoordinate)
+        self._OutVoiceOut = OpenRTM_aist.OutPort("OutVoice", self._d_OutVoice)
 
 
 		
@@ -113,15 +113,15 @@ class deleteObject(OpenRTM_aist.DataFlowComponentBase):
         # Bind variables and configuration variable
 		
         # Set InPort buffers
-        self.addInPort("inCoordinate",self._inCoordinateIn)
+        self.addInPort("InCoordinate",self._InCoordinateIn)
+        self.addInPort("InImage",self._InImageIn)
+        self.addInPort("InVoice",self._InVoiceIn)
         self.addInPort("id",self._idIn)
-        self.addInPort("inVoice",self._inVoiceIn)
-        self.addInPort("inImage",self._inImageIn)
 		
         # Set OutPort buffers
-        self.addOutPort("outVoice",self._outVoiceOut)
-        self.addOutPort("outImage",self._outImageOut)
-        self.addOutPort("outCoordinate",self._outCoordinateOut)
+        self.addOutPort("OutCoordinate",self._OutCoordinateOut)
+        self.addOutPort("OutImage",self._OutImageOut)
+        self.addOutPort("OutVoice",self._OutVoiceOut)
 		
         # Set service provider to Ports
 		
@@ -205,68 +205,113 @@ class deleteObject(OpenRTM_aist.DataFlowComponentBase):
     #
     #
     def onExecute(self, ec_id):
-              # idポートからデータを読み込む
-        # 入力ポートからデータを受け取り、変数に代入する処理
-        if self._inVoiceIn.isNew():
-            print("#####オブジェクトデリート######")
-            #追加音声の読み込み
-            print("音声読み込み開始")
-            voiceIn_data_list = []
-            while self._inVoiceIn.isNew():
-                voiceIn_data = self._inVoiceIn.read().data
-                #voiceIn_data_list += voiceIn_data
-                voiceIn_data_list.append(voiceIn_data)
-            print("現在の音声配列の長さ："+ str(len(voiceIn_data_list)))
 
-        if self._inImageIn.isNew():
-            #追加画像の読み込み
-            print("画像読み込み開始")
-            imageIn_data_list = []
-            while self._inImageIn.isNew():
-                imageIn_data = self._inImageIn.read().data
-                #imageIn_data_list += imageIn_data
-                imageIn_data_list.append(imageIn_data)
-            print("現在の画像配列の長さ："+ str(len(imageIn_data_list)))
-
-        if self._inCoordinateIn.isNew():
-            #追加座標の読み込み
-            print("座標読み込み開始")
-            coordinateIn_data_list = []
-            while self._inCoordinateIn.isNew():
-                coordinateIn_data = self._inCoordinateIn.read().data
-                coordinateIn_data_list.append(coordinateIn_data)
-            print("現在の座標配列の長さ："+ str(len(coordinateIn_data_list)))
-        # 入力データのチェック
-        
         if self._idIn.isNew():
             id_data = self._idIn.read()
-            id_number = id_data.data
-            
+            id_number = id_data.data    #最初は１
+            print("idを受け取りました")
                 # ここで各配列とidの値を使った処理を行う
-            del voiceIn_data_list[id_number]
-            del imageIn_data_list[id_number]
-            del coordinateIn_data[id_number]
+            if self._InVoiceIn.isNew():
+                print("#####オブジェクトデリート######")
+                #追加音声の読み込み
+                print("音声読み込み開始")
+                voiceIn_data_list = []
+                while self._InVoiceIn.isNew():
+                    voiceIn_data = self._InVoiceIn.read().data
+                    #voiceIn_data_list += voiceIn_data
+                    voiceIn_data_list.append(voiceIn_data)
+                print("現在の音声配列の長さ："+ str(len(voiceIn_data_list)))
+                del voiceIn_data_list[id_number]
+
+            if self._InImageIn.isNew():
+                #追加画像の読み込み
+                print("画像読み込み開始")
+                imageIn_data_list = []
+                while self._InImageIn.isNew():
+                    imageIn_data = self._InImageIn.read().data
+                    #imageIn_data_list += imageIn_data
+                    imageIn_data_list.append(imageIn_data)
+                print("現在の画像配列の長さ："+ str(len(imageIn_data_list)))
+                del imageIn_data_list[id_number]
+
+            if self._InCoordinateIn.isNew():
+                #追加座標の読み込み
+                print("座標読み込み開始")
+                coordinateIn_data_list = []
+                while self._InCoordinateIn.isNew():
+                    coordinateIn_data = self._InCoordinateIn.read().data
+                    coordinateIn_data_list.append(coordinateIn_data)
+                print("現在の座標配列の長さ："+ str(len(coordinateIn_data_list)))
+                del coordinateIn_data_list[id_number]
             print("現在の音声配列の長さ："+ str(len(voiceIn_data_list)))
             print("現在の画像配列の長さ："+ str(len(imageIn_data_list)))
             print("現在の座標配列の長さ："+ str(len(coordinateIn_data_list)))
            #Voice出力
             for data in voiceIn_data_list:
                 Outvoice = RTC.TimedOctetSeq(RTC.Time(0,0),data)
-            self._outVoiceOut.write(Outvoice)
+            self._OutVoiceOut.write(Outvoice)
             #imageの出力
             for data in imageIn_data_list:
-                Outimage = RTC.TimedOctetSeq(RTC.Time(0,0),data)
-            self._outImageOut.write(Outimage)
+                Outimage = RTC.TimedShortSeq(RTC.Time(0,0),data)
+            self._OutImageOut.write(Outimage)
             #座標の出力
             for data in coordinateIn_data_list:
                 OutCoordinate = RTC.TimedShortSeq(RTC.Time(0,0),data)
-                self._outCoordinateOut.write(OutCoordinate)
+                self._OutCoordinateOut.write(OutCoordinate)
             # 入力データが揃っていない場合は処理を中断
-            
-        return RTC.RTC_OK
+
+        else:
+            if self._InVoiceIn.isNew():
+                print("#####オブジェクトデリート通過######")
+                #追加音声の読み込み
+                print("音声読み込み開始")
+                voiceIn_data_list = []
+                while self._InVoiceIn.isNew():
+                    voiceIn_data = self._InVoiceIn.read().data
+                    #voiceIn_data_list += voiceIn_data
+                    voiceIn_data_list.append(voiceIn_data)
+                print("現在の音声配列の長さ："+ str(len(voiceIn_data_list)))
+             
+
+            if self._InImageIn.isNew():
+                #追加画像の読み込み
+                print("画像読み込み開始")
+                imageIn_data_list = []
+                while self._InImageIn.isNew():
+                    imageIn_data = self._InImageIn.read().data
+                    #imageIn_data_list += imageIn_data
+                    imageIn_data_list.append(imageIn_data)
+                print("現在の画像配列の長さ："+ str(len(imageIn_data_list)))
+       
+
+            if self._InCoordinateIn.isNew():
+                #追加座標の読み込み
+                print("座標読み込み開始")
+                coordinateIn_data_list = []
+                while self._InCoordinateIn.isNew():
+                    coordinateIn_data = self._InCoordinateIn.read().data
+                    coordinateIn_data_list.append(coordinateIn_data)
+                print("現在の座標配列の長さ："+ str(len(coordinateIn_data_list)))
+
+            for data in voiceIn_data_list:
+                Outvoice = RTC.TimedOctetSeq(RTC.Time(0,0),data)
+            self._OutVoiceOut.write(Outvoice)
+            #imageの出力
+            for data in imageIn_data_list:
+                Outimage = RTC.TimedShortSeq(RTC.Time(0,0),data)
+            self._OutImageOut.write(Outimage)
+            #座標の出力
+            for data in coordinateIn_data_list:
+                OutCoordinate = RTC.TimedShortSeq(RTC.Time(0,0),data)
+                self._OutCoordinateOut.write(OutCoordinate)
+       
+
         
+            
+            
+       
     
-      
+        return RTC.RTC_OK
 	
     ###
     ##
